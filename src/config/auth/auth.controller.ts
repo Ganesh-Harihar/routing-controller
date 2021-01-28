@@ -2,11 +2,11 @@ import { Controller, JsonController, Post, Body, Req, Res, UseBefore, Get, Curre
 import { OpenAPI } from "routing-controllers-openapi";
 import { Response, Request } from "express";
 import { Inject } from "typedi";
-import { UserService } from "../users/user.service";
+import { UserService } from "../../modules/users/user.service";
 const jwt = require('jsonwebtoken');
 import _ = require('lodash');
 import { requireJWTAuth, setCurrentUserInfo } from "./auth.middleware";
-import { Current } from "../users/user.model";
+import { Current } from "../../modules/users/user.model";
 
 @Controller()
 @JsonController('/auth')

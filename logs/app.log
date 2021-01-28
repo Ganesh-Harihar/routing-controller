@@ -1,0 +1,20 @@
+2021-01-28T05:56:44.199Z - info: [Auth] Error: Token Missing
+2021-01-28T06:10:50.644Z - error: uncaughtException: The `uri` parameter to `openUri()` must be a string, got "undefined". Make sure the first parameter to `mongoose.connect()` or `mongoose.createConnection()` is a string. date=Thu Jan 28 2021 11:40:50 GMT+0530 (India Standard Time), pid=18688, uid=1000, gid=1000, cwd=/home/am-n5/Desktop/My apps/Node js/ts-server, execPath=/usr/bin/node, version=v12.14.1, argv=[/home/am-n5/Desktop/My apps/Node js/ts-server/node_modules/.bin/ts-node, /home/am-n5/Desktop/My apps/Node js/ts-server/app.ts], rss=253829120, heapTotal=189534208, heapUsed=162081744, external=21061999, loadavg=[0.65087890625, 0.26318359375, 0.6728515625], uptime=6120
+MongooseError: The `uri` parameter to `openUri()` must be a string, got "undefined". Make sure the first parameter to `mongoose.connect()` or `mongoose.createConnection()` is a string.
+    at new MongooseError (/home/am-n5/node_modules/mongoose/lib/error/mongooseError.js:10:11)
+    at NativeConnection.Connection.openUri (/home/am-n5/node_modules/mongoose/lib/connection.js:579:11)
+    at Mongoose.connect (/home/am-n5/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/home/am-n5/Desktop/My apps/Node js/ts-server/app.ts:11:10)
+    at Module._compile (internal/modules/cjs/loader.js:955:30)
+    at Module.m._compile (/home/am-n5/Desktop/My apps/Node js/ts-server/node_modules/ts-node/src/index.ts:1056:23)
+    at Module._extensions..js (internal/modules/cjs/loader.js:991:10)
+    at Object.require.extensions.<computed> [as .ts] (/home/am-n5/Desktop/My apps/Node js/ts-server/node_modules/ts-node/src/index.ts:1059:12)
+    at Module.load (internal/modules/cjs/loader.js:811:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:723:14)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:1043:10)
+    at main (/home/am-n5/Desktop/My apps/Node js/ts-server/node_modules/ts-node/src/bin.ts:198:14)
+    at Object.<anonymous> (/home/am-n5/Desktop/My apps/Node js/ts-server/node_modules/ts-node/src/bin.ts:288:3)
+    at Module._compile (internal/modules/cjs/loader.js:955:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:991:10)
+    at Module.load (internal/modules/cjs/loader.js:811:32)
+2021-01-28T06:11:09.137Z - info: [Auth] Error: Token Missing

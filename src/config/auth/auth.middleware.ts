@@ -1,4 +1,4 @@
-import { UserSchema } from "../users/user.model";
+import { UserSchema } from "../../modules/users/user.model";
 import { getTokenFromRequest } from ".";
 import * as _ from 'lodash';
 const jwt = require('jsonwebtoken');

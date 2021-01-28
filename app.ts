@@ -4,11 +4,11 @@ import 'ts-helpers';
 import { useExpressServer } from 'routing-controllers';
 import { UserController } from './src/modules/users/user.controller';
 import * as mongoose from 'mongoose';
-import { AuthController } from './src/modules/auth/auth.controller';
+import { AuthController } from './src/config/auth/auth.controller';
 let express = require('express');
-import * as auth from './src/modules/auth';
+import * as auth from './src/config/auth';
 
-mongoose.connect('mongodb://localhost:27017/ts-server', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true
 });
 

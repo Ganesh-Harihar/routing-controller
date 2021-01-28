@@ -1,6 +1,7 @@
-import { User } from "../users/user.model";
+import { User } from "../../modules/users/user.model";
 import { Action } from 'routing-controllers';
 import * as request from 'request-promise-native';
+import { logger } from "../logger";
 
 /**
  * Process current user with call to auth uri with token.
@@ -30,7 +31,7 @@ export const getUserFromRequest = async (actionRequest: any, roles: string[]): P
 
             const token = await getTokenFromRequest(actionRequest);
             if (!token) {
-                console.log('[Auth] Error: Token Missing');
+                logger.info('[Auth] Error: Token Missing');
                 return reject();
             }
 
@@ -47,7 +48,7 @@ export const getUserFromRequest = async (actionRequest: any, roles: string[]): P
 
 
             if (!user) {
-                console.log('[Auth] Error: No user from auth request');
+                logger.info('[Auth] Error: No user from auth request');
                 return reject();
             }
 
@@ -64,7 +65,7 @@ export const getUserFromRequest = async (actionRequest: any, roles: string[]): P
                 user
             });
         } catch (error) {
-            console.log('[AUTH] Error:', error);
+            logger.info('[AUTH] Error:', error);
             reject();
         }
     });

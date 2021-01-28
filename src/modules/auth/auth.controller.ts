@@ -1,10 +1,12 @@
-import { Controller, JsonController, Post, Body, Req, Res, UseBefore } from "routing-controllers";
+import { Controller, JsonController, Post, Body, Req, Res, UseBefore, Get, CurrentUser, Authorized } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
-import { Request, Response } from "express";
+import { Response, Request } from "express";
 import { Inject } from "typedi";
 import { UserService } from "../users/user.service";
 const jwt = require('jsonwebtoken');
 import _ = require('lodash');
+import { requireJWTAuth, setCurrentUserInfo } from "./auth.middleware";
+import { Current } from "../users/user.model";
 
 @Controller()
 @JsonController('/auth')
@@ -25,8 +27,9 @@ export class AuthController {
                     {
                         _id: foundUser._id
                     }, process.env.JWT_KEY, {
-                    expiresIn: 60
+                    expiresIn: '1h'
                 })
+
                 return response.status(200).json({
                     token: token,
                     user: _.pick(foundUser, '_id', 'name', 'email', 'createdAt', 'updatedAt') as any
@@ -36,6 +39,24 @@ export class AuthController {
             }
         } else {
             return response.status(422).json({ message: 'Email or password you’ve entered is incorrect.' });
+        }
+    }
+
+
+    @Get('/self')
+    @UseBefore(requireJWTAuth, setCurrentUserInfo)
+    async self(@Res() res: Response, @Req() req: any) {
+        return res.status(200).json(req.currentUser);
+    }
+
+
+    @Authorized()
+    @Get('/logout')
+    async logout(@Res() res: Response, @Req() req: any, @CurrentUser() current: Current) {
+        try {
+            return res.sendStatus(204);
+        } catch (error) {
+            return res.status(422).json({ message: error.message || 'Error while logout!' });
         }
     }
 }

@@ -1,10 +1,10 @@
-import { Controller, Param, Body, Get, Post, Put, Delete, JsonController, Req, Res, UseBefore } from 'routing-controllers';
+import { Controller, Param, Body, Get, Post, Put, Delete, JsonController, Req, Res, UseBefore, CurrentUser } from 'routing-controllers';
 import { Inject } from 'typedi';
 import { UserService } from './user.service';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Response, Request } from 'express';
 import { User } from './user.model';
-import { preLogin } from '../../middlewares/auth.middleware';
+import { MailService } from '../ts-mailer/mailer.service';
 
 @Controller()
 @JsonController('/users')
@@ -15,8 +15,11 @@ export class UserController {
     @Inject()
     userService: UserService = new UserService();
 
+    @Inject()
+    mailerService: MailService = new MailService;
+
     @Get('/')
-    @UseBefore(preLogin)
+    @UseBefore()
     @OpenAPI({ summary: 'Get list of all the users', operationId: 'getAll' })
     async getAll(@Req() request: Request, @Res() response: Response) {
         try {
@@ -54,12 +57,26 @@ export class UserController {
     @OpenAPI({ summary: 'sign up', operationId: 'signUp' })
     async signUp(@Body() user: User, @Res() response: Response) {
         try {
-
             if (!this.userService.isPasswordStrong(user.password.toString())) {
                 throw new Error(`Password did not fullfil its minimum policies`);
             }
 
             const createdUser = await this.userService.create(user);
+            /**
+            * Create Verification link and send email
+            */
+            const verificationToken = await this.userService.generateVerificationToken(createdUser);
+            const verificationLink = `http://localhost:3000/auth/activate-user?verify=${verificationToken}`;
+
+            const headers = {
+                to: createdUser.email
+            }
+
+            const template = `<h2>Hello ${createdUser.name}, <br>to activate yourself please click below link
+            <a href=${verificationLink}>Activate</a>`
+
+            this.mailerService.sendMail(headers, template);
+
             return response.status(200).json({
                 'status': 'Success',
                 'data': createdUser

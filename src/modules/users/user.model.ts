@@ -1,11 +1,27 @@
 import { JSONSchema } from 'class-validator-jsonschema';
-import { IsOptional, IsMongoId, IsString } from 'class-validator';
+import { IsOptional, IsMongoId, IsString, IsEnum } from 'class-validator';
 import { Schema, Document } from 'mongoose';
-import mongoose from 'mongoose';
+import * as mongoose from 'mongoose';
 import { emailRegex } from './user.service'
+import { Type } from 'class-transformer';
 
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('RomanEmpire@123');
+
+export enum UserRole {
+    Admin = 'Admin',
+    Manager = 'Manager',
+    RegularUser = 'RegularUser'
+}
+
+export enum UserStatus {
+    Invited = 'Invited',
+    Active = 'Active'
+}
+
+export interface Current {
+    user: User;
+}
 
 @JSONSchema({ description: 'User' })
 export class User {
@@ -23,6 +39,18 @@ export class User {
     @IsString()
     password!: String;
 
+    @IsOptional()
+    @IsEnum(UserRole)
+    role!: UserRole;
+
+    @IsOptional()
+    @IsEnum(UserStatus)
+    status!: UserStatus;
+
+    @IsOptional()
+    @Type(() => Object)
+    verify: any;
+
 }
 
 /*
@@ -35,12 +63,32 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
+        lowercase: true,
+        unique: [true, 'User with this email address is already exist'],
         required: true
     },
     password: {
         type: String,
         required: true
-    }
+    },
+    verify: {
+        token: {
+            type: String
+        },
+        expiresIn: {
+            type: Date
+        }
+    },
+    role: {
+        type: String,
+        default: UserRole.Admin,
+        enum: Object.keys(UserRole)
+    },
+    status: {
+        type: String,
+        default: UserStatus.Invited,
+        enum: Object.keys(UserStatus)
+    },
 }, {
     timestamps: true,
     collection: 'users'

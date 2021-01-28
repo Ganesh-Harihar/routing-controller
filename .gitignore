@@ -1,1 +1,25 @@
-node_modules
+# compiled output
+/dist
+/client/dist
+/tmp
+/logs
+
+# dependencies
+/node_modules
+**/node_modules
+
+# Ignore built ts files
+dist/
+.env
+/server/docs
+/client/docs
+
+.DS_Store
+
+package-lock.json
+client/package-lock.json
+/client/documentation
+
+.idea/
+/.vscode
+/server/uploads

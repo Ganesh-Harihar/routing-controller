@@ -61,5 +61,6 @@ useExpressServer(app, {
   controllers: [UserController, AuthController],
 });
 
+app.use('/uploads', express.static('uploads'));
 
 app.listen(3000);

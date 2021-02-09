@@ -1,10 +1,31 @@
-import { Controller, Param, Body, Get, Post, Put, Delete, JsonController, Req, Res, UseBefore, CurrentUser } from 'routing-controllers';
+import { Controller, Param, Body, Get, Post, Put, Delete, JsonController, Req, Res, UseBefore, CurrentUser, UploadedFile } from 'routing-controllers';
 import { Inject } from 'typedi';
 import { UserService } from './user.service';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Response, Request } from 'express';
 import { User } from './user.model';
 import { MailService } from '../ts-mailer/mailer.service';
+import * as multer from 'multer';
+
+const storage = multer.diskStorage({
+    destination: './temp',
+    filename: (req, file, cb) => {
+        cb(undefined, new Date().toISOString() + file.originalname);
+    },
+});
+
+const fileFilter = (req: any, file: any, cb: any) => {
+    cb(undefined, true);
+};
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 10,
+    },
+    fileFilter: fileFilter,
+});
+
 
 @Controller()
 @JsonController('/users')
@@ -55,12 +76,14 @@ export class UserController {
 
     @Post('/')
     @OpenAPI({ summary: 'sign up', operationId: 'signUp' })
-    async signUp(@Body() user: User, @Res() response: Response) {
+    async signUp(@Body() user: User, @Res() response: Response,
+        @UploadedFile('profilePicture', { options: upload }) profilePicture: any) {
         try {
             if (!this.userService.isPasswordStrong(user.password.toString())) {
                 throw new Error(`Password did not fullfil its minimum policies`);
             }
-
+            
+            user.profilePicture = profilePicture.path;
             const createdUser = await this.userService.create(user);
             /**
             * Create Verification link and send email

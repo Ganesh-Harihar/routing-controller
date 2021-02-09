@@ -51,6 +51,9 @@ export class User {
     @Type(() => Object)
     verify: any;
 
+    @IsString()
+    profilePicture!: String;
+
 }
 
 /*
@@ -89,6 +92,9 @@ const userSchema = new Schema({
         default: UserStatus.Invited,
         enum: Object.keys(UserStatus)
     },
+    profilePicture: {
+        type: String,
+    }
 }, {
     timestamps: true,
     collection: 'users'
